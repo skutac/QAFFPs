@@ -6,7 +6,6 @@ import chembl_wrapper, utils
 
 import config as cfg
 
-
 def export_target_sets(db=None, DATA=None):
     chembl = chembl_wrapper.ChEMBLWrapper()
     targets = chembl.get_chembl_targets()
@@ -17,9 +16,6 @@ def export_target_sets(db=None, DATA=None):
         bioactives = chembl.get_bioactives_for_target(t["tid"])
         bioactives = chembl.filter_by_activity_comment(bioactives)
         target_sets = chembl.export_compounds_for_target_by_activity_type(t, bioactives, 50)
-
-        if i == 100:
-            break
 
 def export_fingerprints_for_target_sets(TARGET_SETS=cfg.DIRS["TARGET_SETS"], fingerprints_dir=cfg.DIRS["FPS"]):
     target_sets = set(os.listdir(TARGET_SETS))
@@ -81,7 +77,6 @@ def get_qsar_models_stats(indir=cfg.DIRS["QSAR_MODELS"]):
             row["ligand_count"] = len([x for x in csv.DictReader(r)])
 
         result.append(row)
-
 
     header = ["target_id", "target_chembl_id", "target_name", "organism", "activity_type", "ligand_count", "train_rmse", "train_q2", "train_r20", "test_rmse", "test_q2", "test_r20"]
     
