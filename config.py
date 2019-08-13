@@ -3,7 +3,7 @@ import os
 HOST = ""
 USER = "chembl"
 PASSWD = "chembl"
-DB = "chembl_19"
+DB = "chembl"
 
 N_ESTIMATORS = 100
 N_JOBS = 2
