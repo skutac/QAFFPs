@@ -115,8 +115,8 @@ class ChEMBLWrapper():
             molecule_dictionary,
             compound_properties,
             compound_structures
-            WHERE pchembl_value IS NOT null
-            AND activities.data_validity_comment is null
+            WHERE pchembl_value IS NOT NULL
+            AND activities.data_validity_comment IS NULL
             AND activities.assay_id = assays.assay_id
             AND assays.tid = target_dictionary.tid
             AND target_dictionary.tid = target_components.tid
@@ -126,7 +126,6 @@ class ChEMBLWrapper():
             AND activities.standard_relation = '='
             AND assays.confidence_score IN ('7', '9')
             AND lower(activities.standard_type) IN ({})
-            -- AND assays.cell_id IS NULL
             AND assays.tid = {}""".format(utils.postgres_array(ACCEPTED_TYPES.keys()), tid))
 
         compounds = utils.dictfetchall(self.cursor)
@@ -149,7 +148,7 @@ class ChEMBLWrapper():
         return target
 
     def merge_activities(self, compounds):
-        """Merge values for identical compounds - average of values"""
+        """Merge values for identical compounds - average of values, if STD > 0.5 reject the value"""
 
         chemblid2records = utils.group_records_by_field(compounds, "cmpd_chembl_id")
         merged = []
@@ -243,7 +242,6 @@ class ChEMBLWrapper():
     def export_compounds_for_target_by_activity_type(self, target, compounds, compound_treshold):
         """
         Initialization of data upload for one target by its activity types
-        @compounds:list of compounds for one target
         """
 
         compounds = copy.deepcopy(compounds)

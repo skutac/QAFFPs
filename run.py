@@ -2,7 +2,7 @@ from __future__ import print_function
 import os, subprocess
 from subprocess import CalledProcessError, check_output
 
-import chembl_wrapper, data, predictions, utils, config as cfg, qaffps
+import chembl_wrapper, data, predictions, utils, config as cfg, qaffps as qaffps_lib
 
 def run():
     # Export target sets from ChEMBL
@@ -36,16 +36,16 @@ def run():
     utils.prepare_ligand_set_from_set_file(os.path.join(cfg.DIRS["LIGAND_SETS"], "example_set.csv"))
 
     # Predict ligand set on all models
-    predictions.predict_ligands_on_all_models(os.path.join(cfg.DIRS["FPS"], "example_set.csv"))
+    predictions.predict_ligands_on_all_models(os.path.join(cfg.DIRS["FPS"], "example_set.csv"), r20_cutoff=0.6, q2_cutoff=0.5)
     
     # Generate QAFFPs for the ligand set
-    qaffps.generate_qaffps("example_set", probability=90, max_dev=2)
+    qaffps_lib.generate_qaffps("example_set", probability=90, max_dev=2)
 
     # Get QAFFPs
-    qaffps = qaffps.get_qaffps("example_set")
+    qaffps = qaffps_lib.get_qaffps("example_set")
 
     #Get b-QAFFPs
-    bqaffps = qaffps.get_bqaffps("example_set", cutoff=5)
-
+    bqaffps = qaffps_lib.get_bqaffps("example_set", cutoff=5)
+    
 if __name__ == '__main__':
     run()

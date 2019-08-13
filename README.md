@@ -2,9 +2,12 @@
 
 Files and scripts used for the generation of QAFFPs
 
-To run the workflow for the generation of QAFFPs execute python run.py command in your console.
+First, you need to setup the connection to ChEMBL database (https://www.ebi.ac.uk/chembl/) running on a PostgreSQL server in config.py file, and setup the Python 2.7 virtual environment using the requirements.txt file (pip install -r requirements.txt).
 
-First, you need to setup the connection to ChEMBL database running on a PostgreSQL server in config.py file, and setup the Python 2.7 virtual environment using the requirements.txt file (pip install -r requirements.txt).
+You also need to install RDkit (https://www.rdkit.org/) with Python bindings, and the caret package for R (http://caret.r-forge.r-project.org/).
+
+To run the workflow for the generation of QAFFPs execute python run.py command in your console (see the code below).
+
 
 ```python
 import os, subprocess

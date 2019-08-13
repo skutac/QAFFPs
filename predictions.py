@@ -220,7 +220,7 @@ def get_error_model(target_set_id):
         model = cPickle.load(input_file)
     return model
 
-def predict_ligands_on_all_models(ligands_file, output_dir=None, r20_cutoff=0.6, q2_cutoff=0.5, force=True):
+def predict_ligands_on_all_models(ligands_file, r20_cutoff=0.6, q2_cutoff=0.5, force=True):
     with open(ligands_file, "r") as input_file:
         ligands = [r for r in csv.DictReader(input_file)]
 
