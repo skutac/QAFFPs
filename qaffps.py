@@ -11,9 +11,9 @@ from rdkit.DataStructs import cDataStructs
 
 import utils, config as cfg
 
-def get_bqaffps(ligand_set_name, cutoff=5, probability=90, max_dev=2, get_rdkit_obj=False):
-    print("Generating b-QAFFPs for set {} (probability: {}, max_dev: {})".format(ligand_set_name, probability, max_dev))
-    qaffps = get_qaffps(ligand_set_name, probability=probability, max_dev=max_dev)
+def get_bqaffps(ligand_set_name, cutoff=5, confidence=90, max_dev=2, get_rdkit_obj=False):
+    print("Generating b-QAFFPs for set {} (confidence: {}, max_dev: {})".format(ligand_set_name, confidence, max_dev))
+    qaffps = get_qaffps(ligand_set_name, confidence=confidence, max_dev=max_dev)
     bqaffps = {}
     length = len(qaffps.values()[0])
     on_counts = []
@@ -33,7 +33,7 @@ def get_bqaffps(ligand_set_name, cutoff=5, probability=90, max_dev=2, get_rdkit_
     print("Average of ON bits: {}".format(numpy.average(on_counts)))
     return bqaffps
 
-def get_qaffps(ligand_set_name, probability=90, max_dev=2, get_experimental=False, as_dicts=False):
+def get_qaffps(ligand_set_name, confidence=90, max_dev=2, get_experimental=False, as_dicts=False):
     print("Get QAFFPs for {}".format(ligand_set_name))
     filepath = os.path.join(cfg.DIRS["QAFFPS"], "{}.csv".format(ligand_set_name))
     qaffps = {}
@@ -48,7 +48,7 @@ def get_qaffps(ligand_set_name, probability=90, max_dev=2, get_experimental=Fals
             qaffps[r[0]] = [float(v) if v != "" else None for v in r[1:]]
 
     else:
-        qaffps, header, stats = generate_qaffps(ligand_set_name, probability=probability, max_dev=max_dev, get_experimental=get_experimental)
+        qaffps, header, stats = generate_qaffps(ligand_set_name, confidence=confidence, max_dev=max_dev, get_experimental=get_experimental)
 
     if as_dicts:
         dicts = []
@@ -60,8 +60,8 @@ def get_qaffps(ligand_set_name, probability=90, max_dev=2, get_experimental=Fals
     
     return qaffps
 
-def generate_qaffps(ligand_set_name, probability=90, max_dev=1.0, get_experimental=False, export=True):
-    print("Generating QAFFPS for set {} (probability: {}, dev: {}, experimental: {})".format(ligand_set_name, probability, max_dev, get_experimental))
+def generate_qaffps(ligand_set_name, confidence=90, max_dev=1.0, get_experimental=False, export=True):
+    print("Generating QAFFPS for set {} (confidence: {}, dev: {}, experimental: {})".format(ligand_set_name, confidence, max_dev, get_experimental))
     
     predictions = os.path.join(cfg.DIRS["PREDICTIONS"], ligand_set_name)
     prediction_files = os.listdir(predictions)
@@ -73,7 +73,7 @@ def generate_qaffps(ligand_set_name, probability=90, max_dev=1.0, get_experiment
 
     header = ["id"]
     compound2fingerprint = {}
-    stats = {"compounds": len(compound_set), "probability": probability, "max_dev": max_dev, "original": 0, "none": 0, "predicted": 0}
+    stats = {"compounds": len(compound_set), "confidence": confidence, "max_dev": max_dev, "original": 0, "none": 0, "predicted": 0}
 
     for f in prediction_files:
         target_set_id = f.split(".")[0]
@@ -87,13 +87,13 @@ def generate_qaffps(ligand_set_name, probability=90, max_dev=1.0, get_experiment
             compound2predicted = {r["id"]:r for r in csv.DictReader(input_file)}
 
         
-        if probability is not None:
-            probability, max_dev = float(probability), float(max_dev)
+        if confidence is not None:
+            confidence, max_dev = float(confidence), float(max_dev)
 
             with open(os.path.join(cfg.DIRS["ERROR_MODELS"], f), "r") as error_values_file:
                 alpha_values = [float(r["alpha"]) for r in csv.DictReader(error_values_file)]
                 alpha_values.sort()
-                pos = int(math.ceil(len(alpha_values)*(probability/100.0))-1)
+                pos = int(math.ceil(len(alpha_values)*(confidence/100.0))-1)
                 alpha_value = alpha_values[pos]
 
         for c in compound_set:
@@ -102,7 +102,7 @@ def generate_qaffps(ligand_set_name, probability=90, max_dev=1.0, get_experiment
                 value = round(compound2value[c], 3)
                 stats["original"] += 1
             else:
-                if probability is None:
+                if confidence is None:
                     value = round(float(compound2predicted[c]["value"]), 3)
                     stats["predicted"] += 1
 
@@ -126,10 +126,10 @@ def generate_qaffps(ligand_set_name, probability=90, max_dev=1.0, get_experiment
     print("None values: {}".format(stats["none"]))
 
     if export:
-        if probability is None:      
+        if confidence is None:      
             outdir = "all"
         else:
-            outdir = "{}_{}".format(probability, max_dev)
+            outdir = "{}_{}".format(confidence, max_dev)
 
         outpath = os.path.join(cfg.DIRS["QAFFPS"], outdir)
         

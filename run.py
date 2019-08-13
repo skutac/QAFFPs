@@ -39,7 +39,7 @@ def run():
     predictions.predict_ligands_on_all_models(os.path.join(cfg.DIRS["FPS"], "example_set.csv"), r20_cutoff=0.6, q2_cutoff=0.5)
     
     # Generate QAFFPs for the ligand set
-    qaffps_lib.generate_qaffps("example_set", probability=90, max_dev=2)
+    qaffps_lib.generate_qaffps("example_set", confidence=90, max_dev=2)
 
     # Get QAFFPs
     qaffps = qaffps_lib.get_qaffps("example_set")
