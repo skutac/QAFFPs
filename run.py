@@ -1,8 +1,3 @@
-# QAFFPs
-
-Files and scripts used for the generation of QAFFPs
-
-```python
 import os, subprocess
 from subprocess import CalledProcessError, check_output
 
@@ -53,4 +48,3 @@ def run():
 
 if __name__ == '__main__':
     run()
-```
