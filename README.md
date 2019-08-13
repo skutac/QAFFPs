@@ -2,6 +2,10 @@
 
 Files and scripts used for the generation of QAFFPs
 
+To run the workflow for the generation of QAFFPs execute python run.py command in your console.
+
+First, you need to setup the connection to ChEMBL database running on a PostgreSQL server in config.py file, and setup the Python 2.7 virtual environment using the requirements.txt file (pip install -r requirements.txt).
+
 ```python
 import os, subprocess
 from subprocess import CalledProcessError, check_output

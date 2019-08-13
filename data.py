@@ -18,15 +18,6 @@ def export_target_sets(db=None, DATA=None):
         bioactives = chembl.filter_by_activity_comment(bioactives)
         target_sets = chembl.export_compounds_for_target_by_activity_type(t, bioactives, 50)
 
-        if i == 100:
-            break
-
-def append_value_field(compounds):
-    for i, c in enumerate(compounds):
-        compounds[i]["value"] = c["standard_value"] if not c["pchembl_value"] else c["pchembl_value"]
-        
-    return compounds
-
 def export_fingerprints_for_target_sets(TARGET_SETS=cfg.DIRS["TARGET_SETS"], fingerprints_dir=cfg.DIRS["FPS"]):
     target_sets = set(os.listdir(TARGET_SETS))
     done_fingerprints = set(os.listdir(fingerprints_dir))
