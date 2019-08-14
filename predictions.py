@@ -86,7 +86,7 @@ def cross_validation(train, k):
     return fold2data
 
 def random_forest(train, test, repeat_count=10):
-    print("\nRANDOM FOREST: {}(train), {}(test), {} repeats".format(len(train), len(test), repeat_count))
+    print("RANDOM FOREST: {}(train), {}(test), {} repeats\n".format(len(train), len(test), repeat_count))
     train_x = [t[1] for t in train]
     train_y = [t[2] for t in train]
     test_x = [t[1] for t in test]
@@ -115,16 +115,8 @@ def random_forest(train, test, repeat_count=10):
 
     return final_rf, repeat2data
 
-def print_model_stats(metrics):
-    print("\n*************************************")
-    print("RMSE:", metrics.RMSE)
-    print("R20:",metrics.Rsquared0)
-    print("Q2:",metrics.Qsquared)
-    print("*************************************\n")
-
-
 def build_qsar_models(target_set_id):
-    print("\nBuilding QSAR model for {}".format(target_set_id))
+    print("QSAR models for {}".format(target_set_id))
     train_ids = get_target_train_set(target_set_id)
     test_ids = get_target_test_set(target_set_id)
     fps = get_fps_for_target_set(target_set_id)
@@ -137,6 +129,7 @@ def build_qsar_models(target_set_id):
 
     fold2data = cross_validation(train_list, 10)
     
+    print("\nCalculating QSAR model...")
     qsar_model, repeat2data = random_forest(train_list, test_list, 10)
     store_qsar_model(qsar_model, target_set_id, cfg.DIRS["QSAR_MODELS"])
     store_modeling_stats(fold2data, repeat2data, target_set_id)
@@ -150,6 +143,7 @@ def build_qsar_models(target_set_id):
     for item in train_list:
         train_list_cp.append([item[0], item[1], molid2residual[item[0]]])
 
+    print("Calculating ERROR model...")
     conformal_model, repeat2data = random_forest(train_list_cp, [], 1)
     store_qsar_model(conformal_model, target_set_id, cfg.DIRS["ERROR_MODELS"])
     store_alphas(fold2data, target_set_id)

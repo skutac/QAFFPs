@@ -6,7 +6,7 @@ import chembl_wrapper, utils
 
 import config as cfg
 
-def export_target_sets(db=None, DATA=None):
+def export_target_sets():
     chembl = chembl_wrapper.ChEMBLWrapper()
     targets = chembl.get_chembl_targets()
     count = len(targets)
@@ -17,14 +17,9 @@ def export_target_sets(db=None, DATA=None):
         bioactives = chembl.filter_by_activity_comment(bioactives)
         target_sets = chembl.export_compounds_for_target_by_activity_type(t, bioactives, 50)
 
-        if i == 100:
-            break
 
 def export_fingerprints_for_target_sets(TARGET_SETS=cfg.DIRS["TARGET_SETS"], fingerprints_dir=cfg.DIRS["FPS"]):
     target_sets = set(os.listdir(TARGET_SETS))
-    done_fingerprints = set(os.listdir(fingerprints_dir))
-
-    target_sets = list(target_sets - done_fingerprints)
     print("Export fingerprints for target sets: {}".format(len(target_sets)))
 
     for ts in target_sets:
@@ -41,14 +36,14 @@ def export_fingerprints_for_target_sets(TARGET_SETS=cfg.DIRS["TARGET_SETS"], fin
                 print(e)
 
         export_fingerprints_to_file(os.path.join(fingerprints_dir, ts), fps)
-    return
+
 
 def export_fingerprints_to_file(filepath, fps):
     with open(filepath, "w") as output:
         csv_writer = csv.writer(output)
         csv_writer.writerow(["id", "value", "fp"])
         csv_writer.writerows(fps)
-    return
+
 
 def get_qsar_models_stats(indir=cfg.DIRS["QSAR_MODELS"]):
     files = [x for x in os.listdir(indir) if "csv" in x]

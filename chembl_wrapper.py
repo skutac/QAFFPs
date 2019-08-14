@@ -2,7 +2,7 @@ from __future__ import print_function
 
 import csv, os, numpy, copy
 
-import utils, config
+import utils, config as cfg
 
 ACCEPTED_TYPES = {
     "ic50":{"nM": {"unit": "-log(M)", "type": "pIC50"}},
@@ -232,7 +232,7 @@ class ChEMBLWrapper():
         return normalized
 
     def export_data_set_to_file(self, compounds, target_id, activity_type):
-        filepath = os.path.join(config.DIRS["TARGET_SETS"], "{}_{}.csv".format(target_id, activity_type.lower()))
+        filepath = os.path.join(cfg.DIRS["TARGET_SETS"], "{}_{}.csv".format(target_id, activity_type.lower()))
 
         with open(filepath, "w") as output:
             csv_writer = csv.DictWriter(output, fieldnames = ["tid", "cmpd_chembl_id", "canonical_smiles", "standard_type", "value", "confidence_score", "cmpd_pref_name", "activity_comment"], extrasaction="ignore")

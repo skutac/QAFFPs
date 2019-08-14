@@ -90,9 +90,9 @@ def get_models_by_parameters(r20_cutoff=0.6, q2_cutoff=0.5):
     print("QSAR models [R20 >= {}, q2 >= {}]:".format(r20_cutoff, q2_cutoff), len(filtered_models))
     return list(filtered_models)
 
-def prepare_ligand_set_from_set_file(filename):    
-    with open(filename, "r") as input_file:
-        ligands = [r for r in csv.DictReader(input_file)]
+def prepare_ligand_set_from_set_file(input_file, output_file):
+    with open(input_file, "r") as r:
+        ligands = [row for row in csv.DictReader(r)]
     
     fps = []
     for l in ligands:
@@ -101,7 +101,7 @@ def prepare_ligand_set_from_set_file(filename):
             fp = get_morgan_fingerprint_for_mol(mol)
             fps.append([l["id"], fp])
 
-    with open(os.path.join(cfg.DIRS["FPS"], filename.split("/")[-1]), "w") as output_file:
+    with open(output_file, "w") as output_file:
         writer = csv.writer(output_file)
         writer.writerow(["id", "fp"])
         writer.writerows(fps)
