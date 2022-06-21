@@ -1,4 +1,4 @@
-numpy==1.15.4
+numpy==1.22.0
 psycopg2==2.7.6.1
 psycopg2-binary==2.7.7
 scikit-learn==0.20.1
